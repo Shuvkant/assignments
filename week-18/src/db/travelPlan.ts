@@ -24,7 +24,18 @@ export async function createTravelPlan(
   endDate: string,
   budget: number
 ) {
- 
+  const travelPlan = await prisma.travelPlan.create({
+    data: {
+      userId,
+      title,
+      destinationCity,
+      destinationCountry,
+      startDate: new Date(startDate), // Convert to Date
+      endDate: new Date(endDate),     // Convert to Date
+      budget,
+    },
+  });
+  return travelPlan;
 }
 
 /*
@@ -36,7 +47,16 @@ export async function updateTravelPlan(
   title?: string,
   budget?: number
 ) {
- 
+  const updatedTravelPlan = await prisma.travelPlan.update({
+    where: {
+      id: planId,
+    },
+    data: {
+      ...(title && { title }), // Only update title if provided
+      ...(budget !== undefined && { budget }), // Only update budget if provided
+    },
+  });
+  return updatedTravelPlan;
 }
 
 /*
@@ -53,5 +73,19 @@ export async function updateTravelPlan(
  * }]
  */
 export async function getTravelPlans(userId: number) {
- 
+  const travelPlans = await prisma.travelPlan.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      id: true,
+      title: true,
+      destinationCity: true,
+      destinationCountry: true,
+      startDate: true,
+      endDate: true,
+      budget: true,
+    },
+  });
+  return travelPlans;
 }

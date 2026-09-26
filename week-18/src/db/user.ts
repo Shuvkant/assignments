@@ -11,9 +11,16 @@ const prisma = new PrismaClient();
  * }
  */
 export async function createUser(username: string, password: string, name: string) {
-    // Insert a new user into the users table
-
+    const user = await prisma.user.create({
+        data: {
+            username,
+            password, 
+            name,
+        },
+    })
+    return user;
 }
+
 /*
  * Should return the User object
  * {
@@ -23,6 +30,15 @@ export async function createUser(username: string, password: string, name: strin
  * }
  */
 export async function getUser(userId: number) {
-    // Retrieve a user by ID from the users table
+    const user = await prisma.user.findUnique({
+        where: {
+            id: userId,
+        },
+    });
 
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    return user;
 }
